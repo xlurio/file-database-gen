@@ -90,11 +90,15 @@ public class ListOfFilesGen {
     return this.directory;
   }
 
-  public static String getFileExtension(String paramString) {
-    int i = paramString.lastIndexOf(".");
-    String str = "";
-    if (i > 0)
-      str = paramString.substring(i + 1);
-    return str;
-  }
+    public static String getFileExtension(String fileName) {
+        /**
+         * Static method the extract the extension from a file name.
+        **/
+        fileName = fileName.toLowerCase();
+        int i = fileName.lastIndexOf(".");
+        String str = "";
+        if (i > 0)
+            str = fileName.substring(i + 1);
+        return str;
+    }
 }

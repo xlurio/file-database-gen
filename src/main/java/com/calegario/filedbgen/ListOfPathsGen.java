@@ -1,5 +1,6 @@
 package com.calegario.filedbgen;
 
+import com.calegario.filedbgen.ListOfFilesGen;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,92 +15,107 @@ public class ListOfPathsGen {
 
   private List<String> listOfPaths;
 
-  public ListOfPathsGen(String paramString, List<String> paramList) {
+  public ListOfPathsGen(String directory, List<String> fileEnds) {
     this.directory = paramString;
-    this.listOfPaths = getListOfPaths(true, paramList);
+    this.listOfPaths = getListOfPaths(this.directory, true, paramList);
   }
 
-  public ListOfPathsGen(String paramString) {
+  public ListOfPathsGen(String directory) {
     this.directory = paramString;
-    this.listOfPaths = getListOfPaths(true);
+    this.listOfPaths = getListOfPaths(this.directory, true, paramList);
   }
 
-  public List<String> getListOfPaths(boolean paramBoolean, List<String> paramList) {
-    if (paramBoolean) {
-      try {
-        Stream<Path> stream = Files.walk(Paths.get(this.directory, new String[0]), new java.nio.file.FileVisitOption[0]);
-        try {
-          List<String> list = (List)stream.filter(paramPath -> endFilter(paramPath, paramList)).map(paramPath -> paramPath.toString()).collect(Collectors.toList());
-          if (stream != null)
-            stream.close();
-          return list;
-        } catch (Throwable throwable) {
-          if (stream != null)
-            try {
-              stream.close();
-            } catch (Throwable throwable1) {
-              throwable.addSuppressed(throwable1);
+    public static List<String> getListOfPaths(
+        String dirPath, boolean relist, List<String> fileEnds
+    ) {
+        /**
+         * Returns a list of the path of all files inside a directory and it's
+         sub diretories, filtering it by it's extensions.
+        **/
+        List<String> list = new ArrayList();
+        if (relist) {
+            File dir = new File(dirPath);
+            List<File> files = (List) dir.listFiles();
+            if (files != null && files.length > 0) {
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        list = Stream.concat(
+                            list.stream(),
+                            getListOfPaths(
+                                f.getAbsolutePath(), relist, fileEnds
+                            ).stream()
+                        ).collect(Collectors.toList());
+                    } else {
+                        list.add(String.valueOf(f.getAbsolutePath());
+                    }
+                }
+                return filter(list, fileEnds);
             }
-          throw throwable;
+        } else if (!relist) {
+          getListOfPaths();
         }
-      } catch (IOException iOException) {
-        iOException.printStackTrace();
-      }
-    } else if (!paramBoolean) {
-      getListOfPaths();
-    }
-    ArrayList<String> arrayList = new ArrayList();
-    try {
-      arrayList.add("Empty");
-    } catch (ClassCastException classCastException) {
-      classCastException.printStackTrace();
-    }
-    return arrayList;
-  }
-
-  public List<String> getListOfPaths(boolean paramBoolean) {
-    if (paramBoolean) {
-      try {
-        Stream<Path> stream = Files.walk(Paths.get(this.directory, new String[0]), new java.nio.file.FileVisitOption[0]);
         try {
-          List<String> list = (List)stream.map(paramPath -> paramPath.toString()).collect(Collectors.toList());
-          if (stream != null)
-            stream.close();
-          return list;
-        } catch (Throwable throwable) {
-          if (stream != null)
-            try {
-              stream.close();
-            } catch (Throwable throwable1) {
-              throwable.addSuppressed(throwable1);
-            }
-          throw throwable;
+          list.add("Empty");
+        } catch (ClassCastException classCastException) {
+          classCastException.printStackTrace();
         }
-      } catch (IOException iOException) {
-        iOException.printStackTrace();
-      }
-    } else if (!paramBoolean) {
-      getListOfPaths();
+        return list;
     }
-    ArrayList<String> arrayList = new ArrayList();
-    try {
-      arrayList.add("Empty");
-    } catch (ClassCastException classCastException) {
-      classCastException.printStackTrace();
-    }
-    return arrayList;
-  }
 
-  public List<String> getListOfPaths() {
-    return this.listOfPaths;
-  }
-
-  public static boolean endFilter(Path paramPath, List<String> paramList) {
-    String str = paramPath.getFileName().toString().toLowerCase();
-    for (byte b = 0; b < paramList.size(); b++) {
-      if (str.endsWith(paramList.get(b)))
-        return true;
+    private static List<String> filter(List<String> list,
+                                       List<String> fileEnds) {
+        for (int i = 0; i < list.size(); i++) {
+            if !fileEnds.contains(ListOfFilesGen.getFileExtension(list.get(i)) {
+                list.remove(i);
+            }
+        }
+        return list;
     }
-    return false;
-  }
+
+    public static List<String> getListOfPaths(String dirPath, boolean relist) {
+        /**
+         * Returns a list of the path of all files inside a directory and it's
+         sub diretories, filtering it by it's extensions.
+        **/
+        List<String> list = new ArrayList();
+        if (relist) {
+            File dir = new File(dirPath);
+            List<File> files = (List) dir.listFiles();
+            if (files != null && files.length > 0) {
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        list = Stream.concat(
+                            list.stream(),
+                            getListOfPaths(
+                                f.getAbsolutePath(), relist
+                            ).stream()
+                        ).collect(Collectors.toList());
+                    } else {
+                        list.add(String.valueOf(f.getAbsolutePath());
+                    }
+                }
+                return list;
+            }
+        } else if (!relist) {
+          getListOfPaths();
+        }
+        try {
+          list.add("Empty");
+        } catch (ClassCastException classCastException) {
+          classCastException.printStackTrace();
+        }
+        return list;
+    }
+
+        try {
+          list.add("Empty");
+        } catch (ClassCastException classCastException) {
+          classCastException.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<String> getListOfPaths() {
+        return this.listOfPaths;
+    }
 }
