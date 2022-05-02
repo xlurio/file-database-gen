@@ -1,6 +1,6 @@
 package com.calegario.filedbgen;
 
-import filedbgen.ListOfPathsGen;
+import com.calegario.filedbgen.ListOfPathsGen;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
