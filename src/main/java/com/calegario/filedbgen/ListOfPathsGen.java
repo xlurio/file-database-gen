@@ -33,7 +33,7 @@ public class ListOfPathsGen {
          * Returns a list of the path of all files inside a directory and it's
          sub diretories, filtering it by it's extensions.
         **/
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         if (relist) {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
@@ -52,15 +52,8 @@ public class ListOfPathsGen {
                 }
                 return filter(list, fileEnds);
             }
-        } else if (!relist) {
-          getListOfPaths();
         }
-        try {
-          list.add("Empty");
-        } catch (ClassCastException classCastException) {
-          classCastException.printStackTrace();
-        }
-        return list;
+        return getListOfPaths();
     }
 
     private static List<String> filter(List<String> list,
@@ -74,12 +67,12 @@ public class ListOfPathsGen {
         return list;
     }
 
-    public List<String> getListOfPaths(String dirPath, boolean relist) {
+    public List<String> getListOfPaths(String dirPath, boolean relist){
         /**
          * Returns a list of the path of all files inside a directory and it's
          sub diretories, filtering it by it's extensions.
         **/
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         if (relist) {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
@@ -97,15 +90,8 @@ public class ListOfPathsGen {
                 }
                 return list;
             }
-        } else if (!relist) {
-          getListOfPaths();
         }
-        try {
-          list.add("Empty");
-        } catch (ClassCastException classCastException) {
-          classCastException.printStackTrace();
-        }
-        return list;
+        return getListOfPaths();
     }
 
     public List<String> getListOfPaths() {

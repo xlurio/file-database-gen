@@ -1,7 +1,8 @@
 package com.calegario.filedbgen;
 
 import com.calegario.filedbgen.ListOfPathsGen;
-import java.io.IOException;
+import java.io.*;
+import java.lang.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,77 +19,84 @@ public class ListOfFilesGen {
 
   private List<String> listOfLastMod;
 
-  public ListOfFilesGen(String paramString, List<String> paramList) {
-    this.directory = paramString;
-    this
-      .listOfPaths = (new ListOfPathsGen(paramString, paramList)).getListOfPaths();
-    this.listOfFileNames = getListOfFileNames();
-    this.listOfLastMod = getListOfLastMod();
-  }
-
-  public ListOfFilesGen(String paramString) {
-    this.directory = paramString;
-    this
-      .listOfPaths = (new ListOfPathsGen(paramString)).getListOfPaths();
-    this.listOfFileNames = getListOfFileNames();
-    this.listOfLastMod = getListOfLastMod();
-  }
-
-  public List<String> getListOfFileNames() {
-    ArrayList<String> arrayList = new ArrayList();
-    for (byte b = 0; b < this.listOfPaths.size(); b++) {
-      Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
-      String str = path.getFileName().toString();
-      arrayList.add(str);
+    public ListOfFilesGen(String paramString, List<String> paramList)
+        throws IOException, FileNotFoundException
+    {
+        this.directory = paramString;
+        this.listOfPaths =
+            (new ListOfPathsGen(paramString, paramList)).getListOfPaths();
+        this.listOfFileNames = getListOfFileNames();
+        this.listOfLastMod = getListOfLastMod();
     }
-    return arrayList;
-  }
 
-  public List<String> getListOfLastMod() {
-    ArrayList<String> arrayList = new ArrayList();
-    try {
-      for (byte b = 0; b < this.listOfPaths.size(); b++) {
-        Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
-        BasicFileAttributes basicFileAttributes = (BasicFileAttributes)Files.readAttributes(path, (Class)BasicFileAttributes.class, new java.nio.file.LinkOption[0]);
-        arrayList.add(basicFileAttributes.lastModifiedTime().toString());
-      }
-    } catch (IOException iOException) {
-      iOException.printStackTrace();
+    public ListOfFilesGen(String paramString)
+        throws IOException, FileNotFoundException
+    {
+        this.directory = paramString;
+        this
+        .listOfPaths = (new ListOfPathsGen(paramString)).getListOfPaths();
+        this.listOfFileNames = getListOfFileNames();
+        this.listOfLastMod = getListOfLastMod();
     }
-    return arrayList;
-  }
 
-  public List<String[]> getListOfFiles() {
-    ArrayList<String[]> arrayList = new ArrayList();
-    for (byte b = 0; b < this.listOfPaths.size(); b++) {
-      String str1 = this.listOfFileNames.get(b);
-      String str2 = getFileExtension(this.listOfFileNames.get(b));
-      String str3 = this.listOfPaths.get(b);
-      String str4 = this.listOfLastMod.get(b);
-      arrayList.add(new String[] { str1, str2, str3, str4 });
+    public List<String> getListOfFileNames() {
+        List<String> arrayList = new ArrayList<String>();
+        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+            Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
+            String str = path.getFileName().toString();
+            arrayList.add(str);
+        }
+        return arrayList;
     }
-    return (List<String[]>)arrayList;
-  }
 
-  public void printListOfFiles() {
-    List<String[]> list = getListOfFiles();
-    System.out.println("file_name; extension; path; last_modification");
-    for (byte b = 0; b < list.size(); b++) {
-      String str1 = ((String[])list.get(b))[0];
-      String str2 = ((String[])list.get(b))[1];
-      String str3 = ((String[])list.get(b))[2];
-      String str4 = ((String[])list.get(b))[3];
-      System.out.println(str1 + "; " + str1 + "; " + str2 + "; " + str3);
+    public List<String> getListOfLastMod()
+        throws IOException
+    {
+        List<String> arrayList = new ArrayList<String>();
+        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+            Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
+            BasicFileAttributes basicFileAttributes =
+                (BasicFileAttributes)Files.readAttributes(
+                    path,
+                    BasicFileAttributes.class,
+                    new java.nio.file.LinkOption[0]
+                );
+            arrayList.add(basicFileAttributes.lastModifiedTime().toString());
+        }
+        return arrayList;
     }
-  }
 
-  public void setDirectory(String paramString) {
-    this.directory = paramString;
-  }
+    public List<String[]> getListOfFiles() {
+        List<String[]> arrayList = new ArrayList<String[]>();
+        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+            String str1 = this.listOfFileNames.get(b);
+            String str2 = getFileExtension(this.listOfFileNames.get(b));
+            String str3 = this.listOfPaths.get(b);
+            String str4 = this.listOfLastMod.get(b);
+            arrayList.add(new String[] { str1, str2, str3, str4 });
+        }
+        return (List<String[]>)arrayList;
+    }
 
-  public String getDirectory() {
-    return this.directory;
-  }
+    public void printListOfFiles() {
+        List<String[]> list = getListOfFiles();
+        System.out.println("file_name; extension; path; last_modification");
+        for (byte b = 0; b < list.size(); b++) {
+            String str1 = ((String[])list.get(b))[0];
+            String str2 = ((String[])list.get(b))[1];
+            String str3 = ((String[])list.get(b))[2];
+            String str4 = ((String[])list.get(b))[3];
+            System.out.println(str1 + "; " + str1 + "; " + str2 + "; " + str3);
+        }
+    }
+
+    public void setDirectory(String paramString) {
+        this.directory = paramString;
+    }
+
+    public String getDirectory() {
+        return this.directory;
+    }
 
     public static String getFileExtension(String fileName) {
         /**
@@ -100,5 +108,30 @@ public class ListOfFilesGen {
         if (i > 0)
             str = fileName.substring(i + 1);
         return str;
+    }
+
+    public static String[] getInfoFromPath(String filePath)
+        throws IOException, FileNotFoundException
+    {
+        /**
+         * Returns an array of informations of the specified path
+        **/
+        Path path = Paths.get(filePath, new String[0]);
+        BasicFileAttributes basicFileAttributes =
+            (BasicFileAttributes)Files.readAttributes(
+                path,
+                BasicFileAttributes.class,
+                new java.nio.file.LinkOption[0]
+            );
+
+        String fileName = path.getFileName().toString();
+        String fileExt = getFileExtension(fileName);
+        String fileLastMod = basicFileAttributes.lastModifiedTime().toString();
+        return new String[]{
+            fileName,
+            fileExt,
+            filePath,
+            fileLastMod
+        };
     }
 }
