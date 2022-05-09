@@ -130,7 +130,7 @@ public class ListOfFilesGen {
         return new String[]{
             fileName,
             fileExt,
-            filePath,
+            ListOfPathsGen.validateAbsPath(new File(filePath)),
             fileLastMod
         };
     }
