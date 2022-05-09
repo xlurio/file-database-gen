@@ -41,11 +41,11 @@ public class ListOfPathsGen {
                 if (f.isDirectory()) {
                     list.addAll(
                         getListOfPaths(
-                            f.getAbsolutePath(),
+                            validateAbsPath(f),
                             fileEnds
                     ));
                 } else {
-                    list.add(f.getAbsolutePath());
+                    list.add(validateAbsPath(f));
                 }
             }
             return filter(list, fileEnds);
@@ -77,10 +77,10 @@ public class ListOfPathsGen {
                 if (f.isDirectory()) {
                     list.addAll(
                         getListOfPaths(
-                            f.getAbsolutePath()
+                            validateAbsPath(f)
                     ));
                 } else {
-                    list.add(f.getAbsolutePath());
+                    list.add(validateAbsPath(f));
                 }
             }
             return list;
@@ -90,5 +90,10 @@ public class ListOfPathsGen {
 
     public List<String> getListOfPaths() {
         return this.listOfPaths;
+    }
+
+    public static String validateAbsPath(File f) {
+        String absPath = f.getAbsolutePath();
+        return absPath.replaceAll("\\\\", "/");
     }
 }
