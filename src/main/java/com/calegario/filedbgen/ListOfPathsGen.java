@@ -45,7 +45,7 @@ public class ListOfPathsGen {
                             fileEnds
                     ));
                 } else {
-                    list.add(String.valueOf(f.getAbsolutePath()));
+                    list.add(f.getAbsolutePath());
                 }
             }
             return filter(list, fileEnds);
@@ -80,7 +80,7 @@ public class ListOfPathsGen {
                             f.getAbsolutePath()
                     ));
                 } else {
-                    list.add(String.valueOf(f.getAbsolutePath()));
+                    list.add(f.getAbsolutePath());
                 }
             }
             return list;
