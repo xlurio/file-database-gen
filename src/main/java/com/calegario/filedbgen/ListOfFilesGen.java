@@ -41,7 +41,7 @@ public class ListOfFilesGen {
 
     public List<String> getListOfFileNames() {
         List<String> arrayList = new ArrayList<String>();
-        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+        for (int b = 0; b < this.listOfPaths.size(); b++) {
             Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
             String str = path.getFileName().toString();
             arrayList.add(str);
@@ -53,7 +53,7 @@ public class ListOfFilesGen {
         throws IOException
     {
         List<String> arrayList = new ArrayList<String>();
-        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+        for (int b = 0; b < this.listOfPaths.size(); b++) {
             Path path = Paths.get(this.listOfPaths.get(b), new String[0]);
             BasicFileAttributes basicFileAttributes =
                 (BasicFileAttributes)Files.readAttributes(
@@ -68,7 +68,7 @@ public class ListOfFilesGen {
 
     public List<String[]> getListOfFiles() {
         List<String[]> arrayList = new ArrayList<String[]>();
-        for (byte b = 0; b < this.listOfPaths.size(); b++) {
+        for (int b = 0; b < this.listOfPaths.size(); b++) {
             String str1 = this.listOfFileNames.get(b);
             String str2 = getFileExtension(this.listOfFileNames.get(b));
             String str3 = this.listOfPaths.get(b);
@@ -81,7 +81,7 @@ public class ListOfFilesGen {
     public void printListOfFiles() {
         List<String[]> list = getListOfFiles();
         System.out.println("file_name; extension; path; last_modification");
-        for (byte b = 0; b < list.size(); b++) {
+        for (int b = 0; b < list.size(); b++) {
             String str1 = ((String[])list.get(b))[0];
             String str2 = ((String[])list.get(b))[1];
             String str3 = ((String[])list.get(b))[2];
