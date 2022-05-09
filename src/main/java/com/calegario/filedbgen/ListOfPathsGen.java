@@ -18,47 +18,44 @@ public class ListOfPathsGen {
 
   public ListOfPathsGen(String directory, List<String> fileEnds) {
     this.directory = directory;
-    this.listOfPaths = getListOfPaths(this.directory, true, fileEnds);
+    this.listOfPaths = getListOfPaths(this.directory, fileEnds);
   }
 
   public ListOfPathsGen(String directory) {
     this.directory = directory;
-    this.listOfPaths = getListOfPaths(this.directory, true);
+    this.listOfPaths = getListOfPaths(this.directory);
   }
 
-    public List<String> getListOfPaths(
-        String dirPath, boolean relist, List<String> fileEnds
+    public static List<String> getListOfPaths(
+        String dirPath, List<String> fileEnds
     ) {
         /**
          * Returns a list of the path of all files inside a directory and it's
          sub diretories, filtering it by it's extensions.
         **/
         List<String> list = new ArrayList<String>();
-        if (relist) {
-            File dir = new File(dirPath);
-            File[] files = dir.listFiles();
-            if (files != null && files.length > 0) {
-                for (File f : files) {
-                    if (f.isDirectory()) {
-                        list.addAll(
-                            getListOfPaths(
-                                f.getAbsolutePath(),
-                                relist,
-                                fileEnds
-                        ));
-                    } else {
-                        list.add(String.valueOf(f.getAbsolutePath()));
-                    }
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+        if (files != null && files.length > 0) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    list.addAll(
+                        getListOfPaths(
+                            f.getAbsolutePath(),
+                            fileEnds
+                    ));
+                } else {
+                    list.add(String.valueOf(f.getAbsolutePath()));
                 }
-                return filter(list, fileEnds);
             }
+            return filter(list, fileEnds);
         }
-        return getListOfPaths();
+        return list;
     }
 
     private static List<String> filter(List<String> list,
                                        List<String> fileEnds) {
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = list.size() - 1; i >= 0; i = i - 1) {
             if (!fileEnds.contains(ListOfFilesGen
                                    .getFileExtension(list.get(i)))){
                 list.remove(i);
@@ -67,31 +64,28 @@ public class ListOfPathsGen {
         return list;
     }
 
-    public List<String> getListOfPaths(String dirPath, boolean relist){
+    public static List<String> getListOfPaths(String dirPath){
         /**
          * Returns a list of the path of all files inside a directory and it's
          sub diretories, filtering it by it's extensions.
         **/
         List<String> list = new ArrayList<String>();
-        if (relist) {
-            File dir = new File(dirPath);
-            File[] files = dir.listFiles();
-            if (files != null && files.length > 0) {
-                for (File f : files) {
-                    if (f.isDirectory()) {
-                        list.addAll(
-                            getListOfPaths(
-                                f.getAbsolutePath(),
-                                relist
-                        ));
-                    } else {
-                        list.add(String.valueOf(f.getAbsolutePath()));
-                    }
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+        if (files != null && files.length > 0) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    list.addAll(
+                        getListOfPaths(
+                            f.getAbsolutePath()
+                    ));
+                } else {
+                    list.add(String.valueOf(f.getAbsolutePath()));
                 }
-                return list;
             }
+            return list;
         }
-        return getListOfPaths();
+        return list;
     }
 
     public List<String> getListOfPaths() {
