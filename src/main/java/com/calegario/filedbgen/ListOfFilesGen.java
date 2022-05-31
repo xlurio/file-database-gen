@@ -3,7 +3,7 @@ package com.calegario.filedbgen;
 import com.calegario.filedbgen.ListOfPathsGen;
 import java.io.*;
 import java.lang.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +11,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.format.*;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoField;
 
 public class ListOfFilesGen {
@@ -82,10 +83,10 @@ public class ListOfFilesGen {
                                      .optionalEnd()
                                      .appendPattern("'Z'")
                                      .toFormatter();
-        DateTimeFormatter finalFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        LocalDate formattedDate = LocalDate.parse(date, formatter);
-        String finalDate = formattedDate.format(finalFormatter);
+        SimpleDateFormat finalFormatter =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
+        String finalDate = finalFormatter.format(formattedDate);
         return finalDate;
     }
 
