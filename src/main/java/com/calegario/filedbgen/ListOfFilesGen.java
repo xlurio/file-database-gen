@@ -3,20 +3,20 @@ package com.calegario.filedbgen;
 import com.calegario.filedbgen.ListOfPathsGen;
 import java.io.*;
 import java.lang.*;
+import java.time.LocalDate;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.format.*;
+import java.time.temporal.ChronoField;
 
 public class ListOfFilesGen {
   private String directory;
-
   private List<String> listOfPaths;
-
   private List<String> listOfFileNames;
-
   private List<String> listOfLastMod;
 
     public ListOfFilesGen(String paramString, List<String> paramList)
@@ -61,9 +61,32 @@ public class ListOfFilesGen {
                     BasicFileAttributes.class,
                     new java.nio.file.LinkOption[0]
                 );
+            String lastModifiedTime = basicFileAttributes
+                                      .lastModifiedTime()
+                                      .toString();
+            String lastModifiedFormatted = formatDate(lastModifiedTime);
             arrayList.add(basicFileAttributes.lastModifiedTime().toString());
         }
         return arrayList;
+    }
+
+    private static String formatDate(String date) {
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                                     .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+                                     .optionalStart()
+                                     .appendPattern(".")
+                                     .appendFraction(
+                                        ChronoField.MICRO_OF_SECOND,
+                                        1, 7, false
+                                     )
+                                     .optionalEnd()
+                                     .appendPattern("'Z'")
+                                     .toFormatter();
+        DateTimeFormatter finalFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        LocalDate formattedDate = LocalDate.parse(date, formatter);
+        String finalDate = formattedDate.format(finalFormatter);
+        return finalDate;
     }
 
     public List<String[]> getListOfFiles() {
