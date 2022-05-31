@@ -11,7 +11,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.format.*;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoField;
 
 public class ListOfFilesGen {
@@ -66,7 +65,7 @@ public class ListOfFilesGen {
                                       .lastModifiedTime()
                                       .toString();
             String lastModifiedFormatted = formatDate(lastModifiedTime);
-            arrayList.add(basicFileAttributes.lastModifiedTime().toString());
+            arrayList.add(lastModifiedFormatted);
         }
         return arrayList;
     }
@@ -83,8 +82,8 @@ public class ListOfFilesGen {
                                      .optionalEnd()
                                      .appendPattern("'Z'")
                                      .toFormatter();
-        SimpleDateFormat finalFormatter =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DateTimeFormatter finalFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
         String finalDate = finalFormatter.format(formattedDate);
         return finalDate;
