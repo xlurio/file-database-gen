@@ -41,32 +41,32 @@ public class ListOfPathsGen {
         final List<String> list = new ArrayList<String>();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
-        try{
-            if (files != null && files.length > 0) {
-                for (final File f : files) {
-                    exec.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (f.isDirectory()) {
-                                list.addAll(
-                                    getListOfPaths(
-                                        validateAbsPath(f),
-                                        fileEnds
-                                ));
-                            } else {
-                                list.add(validateAbsPath(f));
-                            }
+        if (files != null && files.length > 0) {
+            for (final File f : files) {
+                exec.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (f.isDirectory()) {
+                            list.addAll(
+                                getListOfPaths(
+                                    validateAbsPath(f),
+                                    fileEnds
+                            ));
+                        } else {
+                            list.add(validateAbsPath(f));
                         }
-                    });
-                }
-                return filter(list, fileEnds);
+                    }
+                });
             }
-        } catch (Exception ex){
-            ex.printStackTrace();
-        } finally {
             exec.shutdown();
-            return list;
+            try {
+                exec.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            return filter(list, fileEnds);
         }
+        return list;
     }
 
     private static List<String> filter(List<String> list,
