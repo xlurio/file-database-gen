@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Arrays;
+import java.lang.*;
+import java.util.concurrent.*;
 
 public class ListOfPathsGen {
   private String directory;
@@ -27,30 +29,44 @@ public class ListOfPathsGen {
   }
 
     public static List<String> getListOfPaths(
-        String dirPath, List<String> fileEnds
+        String dirPath, final List<String> fileEnds
     ) {
         /**
          * Returns a list of the path of all files inside a directory and it's
          sub diretories, filtering it by it's extensions.
         **/
-        List<String> list = new ArrayList<String>();
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        ExecutorService exec =
+            Executors.newFixedThreadPool(availableProcessors);
+        final List<String> list = new ArrayList<String>();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
-        if (files != null && files.length > 0) {
-            for (File f : files) {
-                if (f.isDirectory()) {
-                    list.addAll(
-                        getListOfPaths(
-                            validateAbsPath(f),
-                            fileEnds
-                    ));
-                } else {
-                    list.add(validateAbsPath(f));
+        try{
+            if (files != null && files.length > 0) {
+                for (final File f : files) {
+                    exec.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (f.isDirectory()) {
+                                list.addAll(
+                                    getListOfPaths(
+                                        validateAbsPath(f),
+                                        fileEnds
+                                ));
+                            } else {
+                                list.add(validateAbsPath(f));
+                            }
+                        }
+                    });
                 }
+                return filter(list, fileEnds);
             }
-            return filter(list, fileEnds);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        } finally {
+            exec.shutdown();
+            return list;
         }
-        return list;
     }
 
     private static List<String> filter(List<String> list,
